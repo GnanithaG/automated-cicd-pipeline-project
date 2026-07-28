@@ -1,0 +1,22 @@
+services:
+  order-service:
+    build: ./java-order-service
+    image: portfolio/order-service:${BUILD_VERSION:-local}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  risk-service:
+    build: ./python-risk-service
+    image: portfolio/risk-service:${BUILD_VERSION:-local}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
